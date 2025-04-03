@@ -16,7 +16,7 @@ public class ProjectSecurityConfig {
     @Bean
     public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable())
+                .csrf(csrf -> csrf.disable()) // CSRF (Cross-Site Request Forgery)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/v1/account/my-account", "/api/v1/loan/my-loan").authenticated()
                         .anyRequest().permitAll()
