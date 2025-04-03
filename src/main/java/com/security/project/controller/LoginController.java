@@ -23,6 +23,7 @@ public class LoginController {
         ResponseEntity response = null;
         try {
             String hashPassword = passwordEncoder.encode(user.getPassword());
+            user.setRole("ROLE_"+user.getRole());
             user.setPassword(hashPassword);
             User savedUser = userRepo.save(user);
             if (savedUser.getId() > 0) {
