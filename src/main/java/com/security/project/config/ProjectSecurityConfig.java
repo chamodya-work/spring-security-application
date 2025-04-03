@@ -28,14 +28,18 @@ public class ProjectSecurityConfig {
 //                        .requestMatchers("/api/v1/loan/my-loan").hasAuthority("user")
 
                                 //how this using role based
-                                .requestMatchers("/api/v1/account/my-account").hasRole("USER")
-                                .requestMatchers("/api/v1/loan/my-loan").hasRole("ADMIN")
+//                                .requestMatchers("/api/v1/account/my-account").hasRole("USER")
+//                                .requestMatchers("/api/v1/loan/my-loan").hasRole("ADMIN")
+
+                                //now moved to general way to continue only authenticated
+                                .requestMatchers("/api/v1/account/my-account").authenticated()
+                                .requestMatchers("/api/v1/loan/my-loan").authenticated()
                                 .anyRequest().permitAll()
                 )
                 .formLogin(form -> form
 //                        .loginPage("/login") // Custom login page (optional, can be default)
 //                        .defaultSuccessUrl("/dashboard", true) // Redirect after successful login
-                        .permitAll()
+                                .permitAll()
                 )
                 .httpBasic(withDefaults()) // Enable HTTP Basic for API clients like Postman
                 .logout(logout -> logout
