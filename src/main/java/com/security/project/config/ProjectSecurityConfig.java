@@ -10,6 +10,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
+import static org.springframework.security.config.Customizer.withDefaults;
+
 @Configuration
 
 public class ProjectSecurityConfig {
@@ -18,22 +20,34 @@ public class ProjectSecurityConfig {
         http
                 .csrf(csrf -> csrf.disable()) // CSRF (Cross-Site Request Forgery)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/v1/account/my-account", "/api/v1/loan/my-loan").authenticated()
-                        .anyRequest().permitAll()
+//                        .requestMatchers("/api/v1/account/my-account").authenticated()
+//                        .requestMatchers("/api/v1/loan/my-loan").authenticated()
+
+                                //this how we using another way using authorize role
+//                        .requestMatchers("/api/v1/account/my-account").hasAuthority("admin")
+//                        .requestMatchers("/api/v1/loan/my-loan").hasAuthority("user")
+
+                                //how this using role based
+                                .requestMatchers("/api/v1/account/my-account").hasRole("USER")
+                                .requestMatchers("/api/v1/loan/my-loan").hasRole("ADMIN")
+                                .anyRequest().permitAll()
                 )
                 .formLogin(form -> form
-//                        .defaultSuccessUrl("/dashboard", true) // Redirect after login
+//                        .loginPage("/login") // Custom login page (optional, can be default)
+//                        .defaultSuccessUrl("/dashboard", true) // Redirect after successful login
                         .permitAll()
                 )
+                .httpBasic(withDefaults()) // Enable HTTP Basic for API clients like Postman
                 .logout(logout -> logout
-                        .logoutUrl("/logout") // Logout endpoint
-                        .logoutSuccessUrl("/") // Redirect after logout
+                        .logoutUrl("/logout")
+                        .logoutSuccessUrl("/")
                         .permitAll()
                 );
 
         return http.build();
     }
-//    @Bean
+
+    //    @Bean
 //    public InMemoryUserDetailsManager userDetailsManager(){
 //        UserDetails admin= User.withDefaultPasswordEncoder()
 //                .username("admin")
@@ -43,7 +57,8 @@ public class ProjectSecurityConfig {
 //        return new InMemoryUserDetailsManager(admin);
 //    }
     @Bean
-    public PasswordEncoder passwordEncoder(){
+    public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
 }
